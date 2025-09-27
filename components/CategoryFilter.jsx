@@ -15,15 +15,15 @@ export default function CategoryFilter({
         contentContainerStyle={homeStyles.categoryFilterScrollContent}
       >
         {categories.map((category) => {
-          const isSelected = selectedCategory === category.name;
+          const isSelected = selectedCategory === category.Text;
           return (
             <TouchableOpacity
-              key={category.id}
+              key={category.Id}
               style={[
                 homeStyles.categoryButton,
                 isSelected && homeStyles.selectedCategory,
               ]}
-              onPress={() => onSelectCategory(category.name)}
+              onPress={() => onSelectCategory(category.Value)}
               activeOpacity={0.7}
             >
               <Image
@@ -41,7 +41,7 @@ export default function CategoryFilter({
                   isSelected && homeStyles.selectedCategoryText,
                 ]}
               >
-                {category.name}
+                {category.Text}
               </Text>
             </TouchableOpacity>
           );

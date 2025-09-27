@@ -1,14 +1,18 @@
 import SafeScreen from "@/components/SafeScreen";
-import { ClerkProvider } from "@clerk/clerk-expo";
-import { tokenCache } from "@clerk/clerk-expo/token-cache";
+import { AuthProvider } from "@/utils/authContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Slot } from "expo-router";
 
 export default function RootLayout() {
+  const queryClient = new QueryClient();
+
   return (
-    <ClerkProvider tokenCache={tokenCache}>
-      <SafeScreen>
-        <Slot />
-      </SafeScreen>
-    </ClerkProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <SafeScreen>
+          <Slot />
+        </SafeScreen>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

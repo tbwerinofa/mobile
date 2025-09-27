@@ -1,11 +1,23 @@
-import { useAuth } from "@clerk/clerk-expo";
+import { AuthContext } from "@/utils/authContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
+import React, { useContext } from "react";
 import { COLORS } from "../../constants/colors.js";
 const TabLayout = () => {
+  /*
   const { isSignedIn } = useAuth();
 
   if (!isSignedIn) return <Redirect href={"(auth)/sign-in"} />;
+  */
+
+  const authState = useContext(AuthContext);
+
+  if (!authState.isReady) return null;
+
+  if (!authState.isLoggedIn) {
+    return <Redirect href="(auth)/sign-in" />;
+  }
+
   return (
     <Tabs
       screenOptions={{

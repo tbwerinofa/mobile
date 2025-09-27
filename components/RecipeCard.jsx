@@ -16,7 +16,7 @@ export default function RecipeCard({ recipe }) {
     >
       <View style={recipeCardStyles.imageContainer}>
         <Image
-          source={{ uri: recipe.image }}
+          source={require("../assets/images/pork.png")}
           style={recipeCardStyles.image}
           contentFit="cover"
           transition={300}
@@ -25,26 +25,28 @@ export default function RecipeCard({ recipe }) {
 
       <View style={recipeCardStyles.content}>
         <Text style={recipeCardStyles.title} numberOfLines={2}>
-          {recipe.title}
+          {recipe.Project}
         </Text>
-        {recipe.description && (
+        {recipe.RequestNo && (
           <Text style={recipeCardStyles.description} numberOfLines={2}>
-            {recipe.description}
+            {recipe.RequestDateString}
           </Text>
         )}
 
         <View style={recipeCardStyles.footer}>
-          {recipe.cookTime && (
+          {recipe.Project && (
             <View style={recipeCardStyles.timeContainer}>
               <Ionicons
                 name="time-outline"
                 size={14}
                 color={COLORS.textLight}
               />
-              <Text style={recipeCardStyles.timeText}>{recipe.cookTime}</Text>
+              <Text style={recipeCardStyles.timeText}>
+                {recipe.RequestDateString}
+              </Text>
             </View>
           )}
-          {recipe.servings && (
+          {recipe.RequestDateString && (
             <View style={recipeCardStyles.servingsContainer}>
               <Ionicons
                 name="people-outline"
@@ -52,7 +54,7 @@ export default function RecipeCard({ recipe }) {
                 color={COLORS.textLight}
               />
               <Text style={recipeCardStyles.servingsText}>
-                {recipe.servings}
+                {recipe.RequestDateString}
               </Text>
             </View>
           )}
