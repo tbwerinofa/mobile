@@ -1,15 +1,14 @@
+import { MilestoneResultSet } from "./MilestoneResultSet";
+
 export interface WeeklyProgressCache {
   Id: number;
   Project: string;
+  ProjectId: number;
   Contractor: string;
-  MilestoneOrdinal: number;
-  MilestoneDefinition: boolean;
-  UnitCount: number;
-  CurrentCount: number;
-  Budget: string;
-  Rate: string;
   CurrentClaim: string;
   TotalClaimed: string;
   BalanceClaim: string;
-  ServiceType: string;
+  UnitCount: number;
+  ReportDateString: string;
+  MilestoneResultSet: MilestoneResultSet[];
 }

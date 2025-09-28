@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { FlatList, ScrollView, Text, View } from "react-native";
 import { homeStyles } from "../../assets/styles/home.styles";
 import CategoryFilter from "../../components/CategoryFilter";
+import ProgressReportCard from "../../components/ProgressReportCard";
 import RecipeCard from "../../components/RecipeCard";
 import { COLORS } from "../../constants/colors";
 import { AuthContext } from "../../utils/authContext";
@@ -79,13 +80,13 @@ const HomeScreen = () => {
         {cacheProgressReport.length > 0 && (
           <FlatList
             data={cacheProgressReport}
-            renderItem={({ item }) => <Text>{item.ReportDateString}</Text>}
+            renderItem={({ item }) => (
+              <ProgressReportCard progressReportResult={item} />
+            )}
             keyExtractor={(item) => item.Id.toString()}
             numColumns={2}
             columnWrapperStyle={homeStyles.row}
             contentContainerStyle={homeStyles.recipesGrid}
-            scrollEnabled={false}
-            // ListEmptyComponent={}
           />
         )}
 

@@ -11,9 +11,7 @@ export default function ProgressReportCard({ progressReportResult }) {
   return (
     <TouchableOpacity
       style={homeStyles.container}
-      onPress={() =>
-        router.push(`/progressReportResult/${progressReportResult.Id}`)
-      }
+      onPress={() => router.push(`/progressReport/${progressReportResult.Id}`)}
       activeOpacity={0.8}
     >
       <View style={homeStyles.featuredSection}>
@@ -21,7 +19,7 @@ export default function ProgressReportCard({ progressReportResult }) {
           style={homeStyles.featuredCard}
           activeOpacity={0.9}
           onPress={() =>
-            router.push(`/progressReportResult/${progressReportResult.Id}`)
+            router.push(`/progressReport/${progressReportResult.Id}`)
           }
         >
           <View style={homeStyles.featuredImageContainer}>

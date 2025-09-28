@@ -1,15 +1,15 @@
 import { useUser } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { recipeDetailStyles } from "../../assets/styles/recipe-detail.styles";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { API_URL } from "../../constants/api";
-import { MealAPI } from "../../services/mealAPI";
-
-import { LinearGradient } from "expo-linear-gradient";
-import { recipeDetailStyles } from "../../assets/styles/recipe-detail.styles";
 import { COLORS } from "../../constants/colors";
+import { MealAPI } from "../../services/mealAPI";
+import { AuthContext } from "../../utils/authContext";
 
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
@@ -22,7 +22,7 @@ const RecipeDetailScreen = () => {
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
+  const authContext = useContext(AuthContext);
   const { user } = useUser();
   const userId = user?.id;
 
