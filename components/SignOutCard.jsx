@@ -9,12 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { favoritesStyles } from "../../assets/styles/favorites.styles";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import NoFavoritesFound from "../../components/NoFavoritesFound";
-import RecipeCard from "../../components/RecipeCard";
-import { API_URL } from "../../constants/api";
-import { COLORS } from "../../constants/colors";
+import { favoritesStyles } from "../assets/styles/favorites.styles";
+import LoadingSpinner from "../components/LoadingSpinner";
+import NoFavoritesFound from "../components/NoFavoritesFound";
+import RecipeCard from "../components/RecipeCard";
+import { API_URL } from "../constants/api";
+import { COLORS } from "../constants/colors";
 
 const FavoritesScreen = () => {
   const { signOut } = useClerk();

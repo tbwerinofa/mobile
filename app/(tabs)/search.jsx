@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { searchStyles } from "../../assets/styles/search.styles";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import RecipeCard from "../../components/RecipeCard";
+import RequestByStatusCard from "../../components/RequestByStatusCard";
 import { COLORS } from "../../constants/colors";
 import { useDebounce } from "../../hooks/useDebounce";
 import { MealAPI } from "../../services/mealAPI";
@@ -132,7 +132,7 @@ const SearchScreen = () => {
         ) : (
           <FlatList
             data={recipes}
-            renderItem={({ item }) => <RecipeCard recipe={item} />}
+            renderItem={({ item }) => <RequestByStatusCard recipe={item} />}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
             columnWrapperStyle={searchStyles.row}

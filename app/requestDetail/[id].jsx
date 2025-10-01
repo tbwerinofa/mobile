@@ -4,14 +4,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { DataTable } from "react-native-paper";
-import { NumericFormat } from "react-number-format";
 import { recipeDetailStyles } from "../../assets/styles/recipe-detail.styles";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import WeeklyProgressMilestoneCard from "../../components/WeeklyProgressMilestoneCard";
+import ResidentialUnitCard from "../../components/ResidentialUnitCard";
 import { COLORS } from "../../constants/colors";
 import { AuthContext } from "../../utils/authContext";
-import { FetchProgressReportListDataAPI } from "../hooks/ProgressReportHook";
+import { RequestDataAPI } from "../hooks/RequestHook";
 const ProgressReportDetailScreen = () => {
   const { id: progressReportId } = useLocalSearchParams();
   const router = useRouter();
@@ -23,15 +21,15 @@ const ProgressReportDetailScreen = () => {
   const [isSaving, setIsSaving] = useState(false);
   const authContext = useContext(AuthContext);
 
-  const progressReportResult =
-    FetchProgressReportListDataAPI.useFetchProgressReportById(
-      progressReportId,
-      authContext.userToken
-    );
+  const progressReportResult = RequestDataAPI.useFetchRequestResidentialUnit(
+    progressReportId,
+    authContext.userToken
+  );
 
   useEffect(() => {
     if (progressReportResult.data) {
-      setProjectDetail(progressReportResult.data[0]);
+      setProjectDetail(progressReportResult.data.Request);
+
       setProgressReport(progressReportResult.data);
       setLoading(false);
     } else {
@@ -97,20 +95,25 @@ const ProgressReportDetailScreen = () => {
           <View style={recipeDetailStyles.titleSection}>
             <View style={recipeDetailStyles.categoryBadge}>
               <Text style={recipeDetailStyles.categoryText}>
-                {projectDetail.ReportDateString}
+                {" "}
+                {projectDetail.Project}
               </Text>
             </View>
             <Text style={recipeDetailStyles.recipeTitle}>
-              {projectDetail.ReportDateString}
+              Request No: {projectDetail.RequestNo}
             </Text>
-            {projectDetail.ReportDateString && (
-              <View style={recipeDetailStyles.locationRow}>
-                <Ionicons name="location" size={16} color={COLORS.white} />
-                <Text style={recipeDetailStyles.locationText}>
-                  {projectDetail.ReportDateString} milestone
-                </Text>
-              </View>
-            )}
+            <View style={recipeDetailStyles.locationRow}>
+              <Ionicons name="location" size={16} color={COLORS.white} />
+              <Text style={recipeDetailStyles.locationText}>
+                {projectDetail.RequestDateString}
+              </Text>
+            </View>
+            <View style={recipeDetailStyles.locationRow}>
+              <Ionicons name="location" size={16} color={COLORS.white} />
+              <Text style={recipeDetailStyles.locationText}>
+                {projectDetail.StateMachine}
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -125,9 +128,9 @@ const ProgressReportDetailScreen = () => {
                 <Ionicons name="time" size={20} color={COLORS.white} />
               </LinearGradient>
               <Text style={recipeDetailStyles.statValue}>
-                {projectDetail.ReportDateString}
+                {projectDetail.MilestoneCount}
               </Text>
-              <Text style={recipeDetailStyles.statLabel}>Active Projects</Text>
+              <Text style={recipeDetailStyles.statLabel}>Milestones</Text>
             </View>
 
             <View style={recipeDetailStyles.statCard}>
@@ -138,9 +141,11 @@ const ProgressReportDetailScreen = () => {
                 <Ionicons name="people" size={20} color={COLORS.white} />
               </LinearGradient>
               <Text style={recipeDetailStyles.statValue}>
-                {projectDetail.ReportDateString}
+                {projectDetail.ResidentialUnits}
               </Text>
-              <Text style={recipeDetailStyles.statLabel}>Servings</Text>
+              <Text style={recipeDetailStyles.statLabel}>
+                Residential Units
+              </Text>
             </View>
           </View>
           {/* INSTRUCTIONS SECTION */}
@@ -155,82 +160,41 @@ const ProgressReportDetailScreen = () => {
               <Text style={recipeDetailStyles.sectionTitle}>Projects</Text>
               <View style={recipeDetailStyles.countBadge}>
                 <Text style={recipeDetailStyles.countText}>
-                  {progressReport.length}
+                  {progressReport.Count}
                 </Text>
               </View>
             </View>
           </View>
           <View style={recipeDetailStyles.instructionsContainer}>
-            {progressReport.map((instruction, index) => (
-              <View key={index + 100}>
-                <View key={index} style={recipeDetailStyles.instructionCard}>
-                  <LinearGradient
-                    colors={[COLORS.primary, COLORS.primary + "CC"]}
-                    style={recipeDetailStyles.stepIndicator}
-                  >
-                    <Text style={recipeDetailStyles.stepNumber}>
-                      {index + 1}
-                    </Text>
-                  </LinearGradient>
-                  <View style={recipeDetailStyles.instructionContent}>
-                    <Text style={recipeDetailStyles.instructionText}>
-                      {instruction.Project}
-                    </Text>
-
-                    <View style={recipeDetailStyles.ingredientsGrid}>
-                      <DataTable>
-                        <DataTable.Row key={instruction.ProjectId + 1}>
-                          <DataTable.Cell>Milestone</DataTable.Cell>
-                          <DataTable.Cell text numeric>
-                            {instruction.MilestoneResultSet.length}
-                          </DataTable.Cell>
-                          <DataTable.Cell></DataTable.Cell>
-                          <DataTable.Cell>Total Claim</DataTable.Cell>
-                          <DataTable.Cell numeric>
-                            <NumericFormat
-                              displayType={"text"}
-                              value={instruction.TotalClaimed}
-                              prefix={"R"}
-                              decimalScale={2}
-                              thousandsGroupStyle="lakh"
-                              thousandSeparator=","
-                            />
-                          </DataTable.Cell>
-                        </DataTable.Row>
-                        <DataTable.Row key={instruction.ProjectId + 2}>
-                          <DataTable.Cell>Current Claim</DataTable.Cell>
-                          <DataTable.Cell numeric>
-                            <NumericFormat
-                              displayType={"text"}
-                              value={instruction.CurrentClaim}
-                              prefix={"R"}
-                              decimalScale={2}
-                              thousandSeparator=","
-                            />
-                          </DataTable.Cell>
-                          <DataTable.Cell></DataTable.Cell>
-                          <DataTable.Cell>Balance Claim</DataTable.Cell>
-                          <DataTable.Cell numeric>
-                            {" "}
-                            <NumericFormat
-                              displayType={"text"}
-                              value={instruction.BalanceClaim}
-                              prefix={"R"}
-                              decimalScale={2}
-                              thousandSeparator=","
-                            />
-                          </DataTable.Cell>
-                        </DataTable.Row>
-                      </DataTable>
+            {progressReport.RequestResidentialUnits.map(
+              (instruction, index) => (
+                <View key={index + 100}>
+                  <View>
+                    <View
+                      key={index}
+                      style={recipeDetailStyles.instructionCard}
+                    >
+                      <View>
+                        <LinearGradient
+                          colors={[COLORS.primary, COLORS.primary + "CC"]}
+                          style={recipeDetailStyles.stepIndicator}
+                        >
+                          <Text style={recipeDetailStyles.stepNumber}>
+                            {index + 1}
+                          </Text>
+                        </LinearGradient>
+                        <View style={recipeDetailStyles.instructionContent}>
+                          <Text style={recipeDetailStyles.instructionText}>
+                            {instruction.Name} - {instruction.Count}
+                          </Text>
+                        </View>
+                      </View>{" "}
                     </View>
-
-                    <WeeklyProgressMilestoneCard
-                      weeklyProgressCache={instruction}
-                    />
+                    <ResidentialUnitCard residentialUnitCache={instruction} />
                   </View>
                 </View>
-              </View>
-            ))}
+              )
+            )}
           </View>
         </View>
       </ScrollView>

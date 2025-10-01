@@ -1,12 +1,10 @@
-import { useUser } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { recipeDetailStyles } from "../../assets/styles/recipe-detail.styles";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import { API_URL } from "../../constants/api";
 import { COLORS } from "../../constants/colors";
 import { MealAPI } from "../../services/mealAPI";
 import { AuthContext } from "../../utils/authContext";
@@ -14,7 +12,7 @@ import { AuthContext } from "../../utils/authContext";
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
 
-const RecipeDetailScreen = () => {
+const RequestDetailScreen = () => {
   const { id: recipeId } = useLocalSearchParams();
   const router = useRouter();
 
@@ -23,23 +21,8 @@ const RecipeDetailScreen = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const authContext = useContext(AuthContext);
-  const { user } = useUser();
-  const userId = user?.id;
 
   useEffect(() => {
-    const checkIfSaved = async () => {
-      try {
-        const response = await fetch(`${API_URL}/favorites/${userId}`);
-        const favorites = await response.json();
-        const isRecipeSaved = favorites.some(
-          (fav) => fav.recipeId === parseInt(recipeId)
-        );
-        setIsSaved(isRecipeSaved);
-      } catch (error) {
-        console.error("Error checking if recipe is saved:", error);
-      }
-    };
-
     const loadRecipeDetail = async () => {
       setLoading(true);
       try {
@@ -60,10 +43,7 @@ const RecipeDetailScreen = () => {
         setLoading(false);
       }
     };
-
-    checkIfSaved();
-    loadRecipeDetail();
-  }, [recipeId, userId]);
+  }, [recipeId]);
 
   const getYouTubeEmbedUrl = (url) => {
     // example url: https://www.youtube.com/watch?v=mTvlmY4vCug
@@ -73,45 +53,6 @@ const RecipeDetailScreen = () => {
 
   const handleToggleSave = async () => {
     setIsSaving(true);
-
-    try {
-      if (isSaved) {
-        // remove from favorites
-        const response = await fetch(
-          `${API_URL}/favorites/${userId}/${recipeId}`,
-          {
-            method: "DELETE",
-          }
-        );
-        if (!response.ok) throw new Error("Failed to remove recipe");
-
-        setIsSaved(false);
-      } else {
-        // add to favorites
-        const response = await fetch(`${API_URL}/favorites`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId,
-            recipeId: parseInt(recipeId),
-            title: recipe.title,
-            image: recipe.image,
-            cookTime: recipe.cookTime,
-            servings: recipe.servings,
-          }),
-        });
-
-        if (!response.ok) throw new Error("Failed to save recipe");
-        setIsSaved(true);
-      }
-    } catch (error) {
-      console.error("Error toggling recipe save:", error);
-      Alert.alert("Error", `Something went wrong. Please try again.`);
-    } finally {
-      setIsSaving(false);
-    }
   };
 
   if (loading) return <LoadingSpinner message="Loading recipe details..." />;
@@ -352,4 +293,4 @@ const RecipeDetailScreen = () => {
   );
 };
 
-export default RecipeDetailScreen;
+export default RequestDetailScreen;

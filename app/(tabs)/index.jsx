@@ -5,7 +5,7 @@ import { FlatList, ScrollView, Text, View } from "react-native";
 import { homeStyles } from "../../assets/styles/home.styles";
 import CategoryFilter from "../../components/CategoryFilter";
 import ProgressReportCard from "../../components/ProgressReportCard";
-import RecipeCard from "../../components/RecipeCard";
+import RequestByStatusCard from "../../components/RequestByStatusCard";
 import { COLORS } from "../../constants/colors";
 import { AuthContext } from "../../utils/authContext";
 import { FetchProgressReportListDataAPI } from "../hooks/ProgressReportHook";
@@ -16,7 +16,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const HomeScreen = () => {
   const router = useRouter();
   const [cacheProgressReport, setProgressReport] = useState([]);
-  const [recipes, setRecipes] = useState([]);
+  const [requestResultset, setRequestResultset] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedCategoryText, setSelectedCategoryText] = useState(null);
@@ -67,7 +67,10 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (requests.data) {
-      setRecipes(requests.data);
+      setRequestResultset(requests.data);
+      setLoading(false);
+    } else {
+      setLoading(true);
     }
   }, [requests.data]);
 
@@ -103,10 +106,12 @@ const HomeScreen = () => {
             <Text style={homeStyles.sectionTitle}>{selectedCategoryText}</Text>
           </View>
 
-          {recipes.length > 0 ? (
+          {requestResultset.length > 0 ? (
             <FlatList
-              data={recipes}
-              renderItem={({ item }) => <RecipeCard recipe={item} />}
+              data={requestResultset}
+              renderItem={({ item }) => (
+                <RequestByStatusCard requestResultSet={item} />
+              )}
               keyExtractor={(item) => item.Id.toString()}
               numColumns={2}
               columnWrapperStyle={homeStyles.row}
@@ -121,7 +126,7 @@ const HomeScreen = () => {
                 size={64}
                 color={COLORS.textLight}
               />
-              <Text style={homeStyles.emptyTitle}>No recipes found</Text>
+              <Text style={homeStyles.emptyTitle}>No request found</Text>
               <Text style={homeStyles.emptyDescription}>
                 Try a different category
               </Text>

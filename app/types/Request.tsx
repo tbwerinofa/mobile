@@ -6,5 +6,6 @@ export type Request = {
   RequestDateString: string;
   StateMachine: string;
   ResidentialUnits: number;
+  MilestoneCount: number;
   WorkflowStatusOrdinal: number;
 };
