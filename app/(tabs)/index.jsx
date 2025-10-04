@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { FlatList, ScrollView, Text, View } from "react-native";
 import { homeStyles } from "../../assets/styles/home.styles";
 import CategoryFilter from "../../components/CategoryFilter";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import ProgressReportCard from "../../components/ProgressReportCard";
 import RequestByStatusCard from "../../components/RequestByStatusCard";
 import { COLORS } from "../../constants/colors";
@@ -11,7 +12,6 @@ import { AuthContext } from "../../utils/authContext";
 import { FetchProgressReportListDataAPI } from "../hooks/ProgressReportHook";
 import { RequestDataAPI } from "../hooks/RequestHook";
 import { FetchStandingDataAPI } from "../hooks/WorkFlowHook";
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -73,6 +73,8 @@ const HomeScreen = () => {
       setLoading(true);
     }
   }, [requests.data]);
+
+  if (loading) return <LoadingSpinner message="Loading report details..." />;
 
   return (
     <View style={homeStyles.container}>

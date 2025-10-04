@@ -18,7 +18,7 @@ export default function ProjectCard({ projectResult }) {
         <TouchableOpacity
           style={homeStyles.featuredCard}
           activeOpacity={0.9}
-          onPress={() => router.push(`/project/${projectResult.Id}`)}
+          onPress={() => router.push(`/projectDetail/${projectResult.Id}`)}
         >
           <View style={homeStyles.featuredImageContainer}>
             <Image

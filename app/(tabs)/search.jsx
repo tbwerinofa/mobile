@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   FlatList,
   Text,
@@ -9,49 +9,42 @@ import {
 } from "react-native";
 import { searchStyles } from "../../assets/styles/search.styles";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import RequestByStatusCard from "../../components/RequestByStatusCard";
+import SearchCard from "../../components/SearchCard";
 import { COLORS } from "../../constants/colors";
 import { useDebounce } from "../../hooks/useDebounce";
-import { MealAPI } from "../../services/mealAPI";
-
+import { AuthContext } from "../../utils/authContext";
+import { SearchDataAPI } from "../hooks/SearchHook";
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [recipes, setRecipes] = useState([]);
+  const [searchResultSet, setSearchResultSet] = useState([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
-
+  const authContext = useContext(AuthContext);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const performSearch = async (query) => {
     // if no search query
-    if (!query.trim()) {
-      const randomMeals = await MealAPI.getRandomMeals(12);
-      return randomMeals
-        .map((meal) => MealAPI.transformMealData(meal))
-        .filter((meal) => meal !== null);
+    let canExecute = false;
+    if (!query.trim() || query.trim().length > 4) {
+      canExecute = true;
     }
 
-    // search by name first, then by ingredient if no results
-
-    const nameResults = await MealAPI.searchMealsByName(query);
-    let results = nameResults;
-
-    if (results.length === 0) {
-      const ingredientResults = await MealAPI.filterByIngredient(query);
-      results = ingredientResults;
+    if (canExecute) {
+      const randomMeals = await SearchDataAPI.getRandomMeals(
+        authContext.userToken,
+        query.trim()
+      );
+      return randomMeals;
     }
 
-    return results
-      .slice(0, 12)
-      .map((meal) => MealAPI.transformMealData(meal))
-      .filter((meal) => meal !== null);
+    return [];
   };
 
   useEffect(() => {
     const loadInitialData = async () => {
       try {
         const results = await performSearch("");
-        setRecipes(results);
+        setSearchResultSet(results);
       } catch (error) {
         console.error("Error loading initial data:", error);
       } finally {
@@ -70,10 +63,10 @@ const SearchScreen = () => {
 
       try {
         const results = await performSearch(debouncedSearchQuery);
-        setRecipes(results);
+        setSearchResultSet(results);
       } catch (error) {
         console.error("Error searching:", error);
-        setRecipes([]);
+        setSearchResultSet([]);
       } finally {
         setLoading(false);
       }
@@ -82,7 +75,7 @@ const SearchScreen = () => {
     handleSearch();
   }, [debouncedSearchQuery, initialLoading]);
 
-  if (initialLoading) return <LoadingSpinner message="Loading recipes..." />;
+  if (initialLoading) return <LoadingSpinner message="Loading results..." />;
 
   return (
     <View style={searchStyles.container}>
@@ -96,7 +89,7 @@ const SearchScreen = () => {
           />
           <TextInput
             style={searchStyles.searchInput}
-            placeholder="Search recipes, ingredients..."
+            placeholder="Search projects, requests..."
             placeholderTextColor={COLORS.textLight}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -120,20 +113,22 @@ const SearchScreen = () => {
       <View style={searchStyles.resultsSection}>
         <View style={searchStyles.resultsHeader}>
           <Text style={searchStyles.resultsTitle}>
-            {searchQuery ? `Results for "${searchQuery}"` : "Popular Recipes"}
+            {searchQuery ? `Results for "${searchQuery}"` : "Latest Search"}
           </Text>
-          <Text style={searchStyles.resultsCount}>{recipes.length} found</Text>
+          <Text style={searchStyles.resultsCount}>
+            {searchResultSet.length} found
+          </Text>
         </View>
 
         {loading ? (
           <View style={searchStyles.loadingContainer}>
-            <LoadingSpinner message="Searching recipes..." size="small" />
+            <LoadingSpinner message="Searching IPIS..." size="small" />
           </View>
         ) : (
           <FlatList
-            data={recipes}
-            renderItem={({ item }) => <RequestByStatusCard recipe={item} />}
-            keyExtractor={(item) => item.id.toString()}
+            data={searchResultSet}
+            renderItem={({ item }) => <SearchCard recipe={item} />}
+            keyExtractor={(item) => item.Discriminator.toString()}
             numColumns={2}
             columnWrapperStyle={searchStyles.row}
             contentContainerStyle={searchStyles.recipesGrid}
@@ -151,7 +146,7 @@ function NoResultsFound() {
   return (
     <View style={searchStyles.emptyState}>
       <Ionicons name="search-outline" size={64} color={COLORS.textLight} />
-      <Text style={searchStyles.emptyTitle}>No recipes found</Text>
+      <Text style={searchStyles.emptyTitle}>No results found</Text>
       <Text style={searchStyles.emptyDescription}>
         Try adjusting your search or try different keywords
       </Text>
