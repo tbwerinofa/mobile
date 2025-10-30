@@ -18,6 +18,27 @@ export const RequestDataAPI = {
 
     return data;
   },
+  UseFetchRequestByStateandProject: (
+    id: number,
+    projectId: number,
+    token: string
+  ) => {
+    let data = useQuery<Request[], AxiosError>({
+      queryKey: [`RequestByStateMachine_${id}_Project_${projectId}`],
+      queryFn: () =>
+        fetch(
+          `${config.baseApiUrl}/api/Request/?id=${id}&projectId=${projectId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        ).then((res) => res.json()),
+    });
+
+    return data;
+  },
   useFetchRequestResidentialUnit: (id: number, token: string) => {
     let data = useQuery<RequestContainer, AxiosError>({
       queryKey: ["RequestResidentialUnit" + id.toString()],

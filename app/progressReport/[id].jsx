@@ -17,10 +17,7 @@ const ProgressReportDetailScreen = () => {
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState(null);
   const [progressReport, setProgressReport] = useState([]);
-  const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const authContext = useContext(AuthContext);
 
   const progressReportResult =
@@ -39,10 +36,6 @@ const ProgressReportDetailScreen = () => {
     }
   }, [progressReportResult.data]);
 
-  const handleToggleSave = async () => {
-    setIsSaving(true);
-  };
-
   if (loading) return <LoadingSpinner message="Loading report details..." />;
 
   return (
@@ -52,7 +45,7 @@ const ProgressReportDetailScreen = () => {
         <View style={recipeDetailStyles.headerContainer}>
           <View style={recipeDetailStyles.imageContainer}>
             <Image
-              source={require("../../assets/images/bg-1.png")}
+              source={require("../../assets/images/undraw_financial-data_lbci.svg")}
               style={recipeDetailStyles.headerImage}
               contentFit="cover"
             />
@@ -62,7 +55,6 @@ const ProgressReportDetailScreen = () => {
             colors={["transparent", "rgba(0,0,0,0.5)", "rgba(0,0,0,0.9)"]}
             style={recipeDetailStyles.gradientOverlay}
           />
-
           <View style={recipeDetailStyles.floatingButtons}>
             <TouchableOpacity
               style={recipeDetailStyles.floatingButton}
@@ -70,44 +62,20 @@ const ProgressReportDetailScreen = () => {
             >
               <Ionicons name="arrow-back" size={24} color={COLORS.white} />
             </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                recipeDetailStyles.floatingButton,
-                { backgroundColor: isSaving ? COLORS.gray : COLORS.primary },
-              ]}
-              onPress={handleToggleSave}
-              disabled={isSaving}
-            >
-              <Ionicons
-                name={
-                  isSaving
-                    ? "hourglass"
-                    : isSaved
-                    ? "bookmark"
-                    : "bookmark-outline"
-                }
-                size={24}
-                color={COLORS.white}
-              />
-            </TouchableOpacity>
           </View>
-
           {/* Title Section */}
           <View style={recipeDetailStyles.titleSection}>
             <View style={recipeDetailStyles.categoryBadge}>
-              <Text style={recipeDetailStyles.categoryText}>
-                {projectDetail.ReportDateString}
-              </Text>
+              <Text style={recipeDetailStyles.categoryText}>Weekly Report</Text>
             </View>
             <Text style={recipeDetailStyles.recipeTitle}>
               {projectDetail.ReportDateString}
             </Text>
-            {projectDetail.ReportDateString && (
+            {projectDetail.Tenant && (
               <View style={recipeDetailStyles.locationRow}>
-                <Ionicons name="location" size={16} color={COLORS.white} />
+                <Ionicons name="business" size={16} color={COLORS.white} />
                 <Text style={recipeDetailStyles.locationText}>
-                  {projectDetail.ReportDateString} milestone
+                  {projectDetail.Tenant}
                 </Text>
               </View>
             )}
@@ -122,12 +90,14 @@ const ProgressReportDetailScreen = () => {
                 colors={["#FF6B6B", "#FF8E53"]}
                 style={recipeDetailStyles.statIconContainer}
               >
-                <Ionicons name="time" size={20} color={COLORS.white} />
+                <Ionicons name="list" size={20} color={COLORS.white} />
               </LinearGradient>
               <Text style={recipeDetailStyles.statValue}>
-                {projectDetail.ReportDateString}
+                {progressReport.reduce((acc, next) => {
+                  return acc + next.CurrentCount;
+                }, 0)}
               </Text>
-              <Text style={recipeDetailStyles.statLabel}>Active Projects</Text>
+              <Text style={recipeDetailStyles.statLabel}>Active Sites</Text>
             </View>
 
             <View style={recipeDetailStyles.statCard}>
@@ -135,12 +105,19 @@ const ProgressReportDetailScreen = () => {
                 colors={["#4ECDC4", "#44A08D"]}
                 style={recipeDetailStyles.statIconContainer}
               >
-                <Ionicons name="people" size={20} color={COLORS.white} />
+                <Ionicons name="cash" size={20} color={COLORS.white} />
               </LinearGradient>
-              <Text style={recipeDetailStyles.statValue}>
-                {projectDetail.ReportDateString}
-              </Text>
-              <Text style={recipeDetailStyles.statLabel}>Servings</Text>
+              <NumericFormat
+                style={recipeDetailStyles.statValue}
+                displayType={"text"}
+                value={progressReport.reduce((acc, next) => {
+                  return acc + next.CurrentClaim;
+                }, 0)}
+                prefix={"R"}
+                decimalScale={2}
+                thousandSeparator=" "
+              />
+              <Text style={recipeDetailStyles.statLabel}>Claim Amount</Text>
             </View>
           </View>
           {/* INSTRUCTIONS SECTION */}
@@ -185,15 +162,14 @@ const ProgressReportDetailScreen = () => {
                             {instruction.MilestoneResultSet.length}
                           </DataTable.Cell>
                           <DataTable.Cell></DataTable.Cell>
-                          <DataTable.Cell>Total Claim</DataTable.Cell>
+                          <DataTable.Cell>Claim to Date</DataTable.Cell>
                           <DataTable.Cell numeric>
                             <NumericFormat
                               displayType={"text"}
                               value={instruction.TotalClaimed}
                               prefix={"R"}
                               decimalScale={2}
-                              thousandsGroupStyle="lakh"
-                              thousandSeparator=","
+                              thousandSeparator=" "
                             />
                           </DataTable.Cell>
                         </DataTable.Row>

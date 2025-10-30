@@ -1,11 +1,9 @@
-import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 import { DataTable } from "react-native-paper";
 import { NumericFormat } from "react-number-format";
 import { recipeDetailStyles } from "../assets/styles/recipe-detail.styles";
-import { COLORS } from "../constants/colors";
 
 export default function WeeklyProgressMilestoneCard({ weeklyProgressCache }) {
   const barData = [];
@@ -14,7 +12,6 @@ export default function WeeklyProgressMilestoneCard({ weeklyProgressCache }) {
     barData.push({
       value: item.UnitCount,
       label: item.MilestoneDefinition,
-      labelWidth: 70,
       topLabelComponent: () => (
         <Text style={{ color: "blue", fontSize: 13, marginBottom: 6 }}>
           {item.UnitCount}
@@ -25,32 +22,34 @@ export default function WeeklyProgressMilestoneCard({ weeklyProgressCache }) {
 
   return (
     <View style={recipeDetailStyles.sectionContainer}>
-      <View style={recipeDetailStyles.sectionTitleRow}>
-        <LinearGradient
-          colors={[COLORS.primary, COLORS.primary + "80"]}
-          style={recipeDetailStyles.sectionIcon}
-        >
-          <Ionicons name="list" size={16} color={COLORS.white} />
-        </LinearGradient>
-        <Text style={recipeDetailStyles.sectionTitle}>Milestones</Text>
-        <View style={recipeDetailStyles.countBadge}>
-          <Text style={recipeDetailStyles.countText}>
-            {weeklyProgressCache.MilestoneResultSet.length}
-          </Text>
-        </View>
-      </View>
       <View style={recipeDetailStyles.ingredientCard}>
-        <BarChart
-          horizontal
-          barWidth={22}
-          noOfSections={3}
-          barBorderRadius={4}
-          frontColor="#177AD5"
-          data={barData}
-          yAxisThickness={0}
-          xAxisThickness={0}
-          isThreeD
-        />
+        <LinearGradient style={{ flex: 1 }} colors={["#000000", "#FFFFFF"]}>
+          <ScrollView contentInsetAdjustmentBehavior="automatic">
+            <BarChart
+              frontColor={"blue"}
+              gradientColor={"red"}
+              data={barData}
+              showGradient
+              noOfSections={4}
+              barBorderRadius={4}
+              yAxisThickness={0}
+              xAxisThickness={0}
+              onPress={() => {}}
+              yAxisLabelTextStyle={{
+                color: "gray",
+                fontSize: 12,
+                fontWeight: "500",
+              }}
+              xAxisLabelTextStyle={{
+                color: "gray",
+                fontSize: 12,
+                fontWeight: "500",
+              }}
+              dashGap={10}
+              showXAxisIndices={false}
+            />
+          </ScrollView>
+        </LinearGradient>
       </View>
       <View style={recipeDetailStyles.ingredientCard}>
         <DataTable>

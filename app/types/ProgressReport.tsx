@@ -6,6 +6,6 @@ export interface ProgressReport {
   ReportDateString: string;
   //  IsWeeklyApproved: boolean;
   ////DocumentGuid: string;
-  //CurrentCount: number;
+  CurrentCount: number;
   CurrentClaim: string;
 }

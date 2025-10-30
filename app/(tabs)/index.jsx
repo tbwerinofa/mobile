@@ -5,7 +5,7 @@ import { FlatList, ScrollView, Text, View } from "react-native";
 import { homeStyles } from "../../assets/styles/home.styles";
 import CategoryFilter from "../../components/CategoryFilter";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import ProgressReportCard from "../../components/ProgressReportCard";
+import ProgressReportCardHorizontal from "../../components/ProgressReportCardHorizontal";
 import RequestByStatusCard from "../../components/RequestByStatusCard";
 import { COLORS } from "../../constants/colors";
 import { AuthContext } from "../../utils/authContext";
@@ -83,15 +83,10 @@ const HomeScreen = () => {
         contentContainerStyle={homeStyles.scrollContent}
       >
         {cacheProgressReport.length > 0 && (
-          <FlatList
-            data={cacheProgressReport}
-            renderItem={({ item }) => (
-              <ProgressReportCard progressReportResult={item} />
-            )}
-            keyExtractor={(item) => item.Id.toString()}
-            numColumns={2}
-            columnWrapperStyle={homeStyles.row}
-            contentContainerStyle={homeStyles.recipesGrid}
+          <ProgressReportCardHorizontal
+            progressReportCache={cacheProgressReport}
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleCategorySelect}
           />
         )}
 
@@ -124,7 +119,7 @@ const HomeScreen = () => {
           ) : (
             <View style={homeStyles.emptyState}>
               <Ionicons
-                name="restaurant-outline"
+                name="home-outline"
                 size={64}
                 color={COLORS.textLight}
               />

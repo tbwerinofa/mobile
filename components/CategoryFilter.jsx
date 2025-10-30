@@ -27,7 +27,7 @@ export default function CategoryFilter({
               activeOpacity={0.7}
             >
               <Image
-                source={{ uri: category.image }}
+                source={`${category.Value2}`}
                 style={[
                   homeStyles.categoryImage,
                   isSelected && homeStyles.selectedCategoryImage,
@@ -35,6 +35,7 @@ export default function CategoryFilter({
                 contentFit="cover"
                 transition={300}
               />
+
               <Text
                 style={[
                   homeStyles.categoryText,

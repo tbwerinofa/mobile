@@ -37,10 +37,6 @@ const ProgressReportDetailScreen = () => {
     }
   }, [progressReportResult.data]);
 
-  const handleToggleSave = async () => {
-    setIsSaving(true);
-  };
-
   if (loading) return <LoadingSpinner message="Loading report details..." />;
 
   return (
@@ -67,27 +63,6 @@ const ProgressReportDetailScreen = () => {
               onPress={() => router.back()}
             >
               <Ionicons name="arrow-back" size={24} color={COLORS.white} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                recipeDetailStyles.floatingButton,
-                { backgroundColor: isSaving ? COLORS.gray : COLORS.primary },
-              ]}
-              onPress={handleToggleSave}
-              disabled={isSaving}
-            >
-              <Ionicons
-                name={
-                  isSaving
-                    ? "hourglass"
-                    : isSaved
-                    ? "bookmark"
-                    : "bookmark-outline"
-                }
-                size={24}
-                color={COLORS.white}
-              />
             </TouchableOpacity>
           </View>
 

@@ -25,7 +25,7 @@ const SearchScreen = () => {
   const performSearch = async (query) => {
     // if no search query
     let canExecute = false;
-    if (!query.trim() || query.trim().length > 4) {
+    if (!query.trim() || query.trim().length >= 3) {
       canExecute = true;
     }
 

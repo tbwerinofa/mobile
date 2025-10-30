@@ -2,9 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
+import { NumericFormat } from "react-number-format";
 import { homeStyles } from "../assets/styles/home.styles";
 import { COLORS } from "../constants/colors";
-
 export default function ProgressReportCard({ progressReportResult }) {
   const router = useRouter();
 
@@ -44,37 +44,31 @@ export default function ProgressReportCard({ progressReportResult }) {
                 <View style={homeStyles.featuredMeta}>
                   <View style={homeStyles.metaItem}>
                     <Ionicons
-                      name="time-outline"
+                      name="list-outline"
                       size={16}
                       color={COLORS.white}
                     />
                     <Text style={homeStyles.metaText}>
-                      {progressReportResult.ReportDateString}
+                      Active Sites :{progressReportResult.CurrentCount}
                     </Text>
                   </View>
                   <View style={homeStyles.metaItem}>
                     <Ionicons
-                      name="people-outline"
+                      name="cash-outline"
                       size={16}
                       color={COLORS.white}
                     />
                     <Text style={homeStyles.metaText}>
-                      {progressReportResult.CurrentClaim}
+                      Claims :
+                      <NumericFormat
+                        displayType={"text"}
+                        value={progressReportResult.CurrentClaim}
+                        prefix={"R"}
+                        decimalScale={2}
+                        thousandSeparator=","
+                      />
                     </Text>
                   </View>
-
-                  {progressReportResult.Id && (
-                    <View style={homeStyles.metaItem}>
-                      <Ionicons
-                        name="location-outline"
-                        size={16}
-                        color={COLORS.white}
-                      />
-                      <Text style={homeStyles.metaText}>
-                        {progressReportResult.Id}
-                      </Text>
-                    </View>
-                  )}
                 </View>
               </View>
             </View>

@@ -37,13 +37,14 @@ const TabLayout = () => {
           fontWeight: "600",
         },
       }}
+      backBehavior="history"
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="restaurant" size={size} color={color} />
+            <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
@@ -61,7 +62,7 @@ const TabLayout = () => {
         options={{
           title: "projects",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart" size={size} color={color} />
+            <Ionicons name="list-circle-sharp" size={size} color={color} />
           ),
         }}
       />
